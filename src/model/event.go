@@ -1,8 +1,9 @@
-package model/event
+package model
 
 import "time"
 
 type Event struct {
+    Id uint32
 	Title string
 	Desc string
 	Link string
