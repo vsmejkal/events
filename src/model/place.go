@@ -1,12 +1,12 @@
 package model
 
 type Place struct {
-    Id uint32
+    Id uint64
 	Title string
 	Categories []string
-    Latitude float32
-    Longitude float32
+    Latitude float64
+    Longitude float64
 	City string
     Street string
-    Zip int
+    Zip string
 }

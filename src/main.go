@@ -1,7 +1,11 @@
 package main
 
-import "parser"
+import (
+    "parser"
+    "model"
+)
 
 func main() {
-    parser.Parse("TwoFacesClub")
+    events := make([]model.Event, 0, 20)
+    parser.ParseEvents("TwoFacesClub", events)
 }

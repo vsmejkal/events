@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Event struct {
-    Id uint32
+    Id uint64
 	Title string
 	Desc string
 	Link string
