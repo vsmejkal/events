@@ -2,17 +2,21 @@ package parser
 
 import (
     "fmt"
+    "time"
     "net/http"
     "encoding/json"
+    "strings"
     "model"
 )
 
 const (
+    FACEBOOK_PREFIX = "https://www.facebook.com/"
+
     FACEBOOK_API = "https://graph.facebook.com/v2.3/"
 
     EVENT_FIELDS = "id,name,description,start_time,end_time,is_date_only,place"
 
-    ACCESS_TOKEN = "CAACEdEose0cBABAa6qHGKKA2qPA8i9vHFm9GOgNxHjJq0A9QD4VneL4nY1JNs8P481YrNym2G2QYU1TK7BZC08rC5CVOCWXF0EIoVl1O2aP0GOSCg620CBZAGIkc3tqfMvPFpea0EfhZCaKaivwBYqKd5w0gPZC4bh9JuLv9Gt7ZCpCNDjBUw3toymvZAthuUJAiNUIZAQJxAu19Yc6Qvc5WhBmEhfG32cZD"
+    ACCESS_TOKEN = "CAACEdEose0cBABPr5uft5ktSLPr4mluNShYyAQFZADejEQIAGjYxtuP8c2tpxnfy6LHxynBGaclcVgfysyZCgimZAaI4PFPnZANlCFR48HaapvZCLAhlExBvKVkP6U7VseerorOWkcZAQGF2PKteT4D1ZBn0RUrZA6m83WQ6Swljzc4zNCEmXBB1NX6LDxUZCteXntz2z0u8KmRW2ZCdarDwM4OfmdLjKkXJ4ZD"
 )
 
 
@@ -51,9 +55,16 @@ type fbEventList struct {
 }
 
 
-func ParseEvents(pageId string, events []model.Event) (error) {
-    url := FACEBOOK_API + pageId + "/events" + "?access_token=" + ACCESS_TOKEN + "&fields=" + EVENT_FIELDS
-    resp, err := http.Get(url)
+func ParseEvents(url string, events *[]model.Event) (error) {
+
+    if !strings.HasPrefix(url, FACEBOOK_PREFIX) {
+        return fmt.Errorf("ParseError: '%s' is not a valid facebook URL", url)
+    }
+
+    page := url[len(FACEBOOK_PREFIX):]
+    req := FACEBOOK_API + page + "/events" + "?access_token=" + ACCESS_TOKEN + "&fields=" + EVENT_FIELDS
+
+    resp, err := http.Get(req)
     if err != nil {
         return err
     }
@@ -63,9 +74,41 @@ func ParseEvents(pageId string, events []model.Event) (error) {
     if err := json.NewDecoder(resp.Body).Decode(&msg); err != nil {
         return err
     }
-    
-    fmt.Println(msg.Data)
+    if msg.Error != nil {
+        return fmt.Errorf("%s: %s", msg.Error.Type, msg.Error.Message)
+    }
+
+    for _, e := range msg.Data {
+        event := model.Event {
+            Name: e.Name,
+            Desc: e.Description,
+            Link: getLink(e.Id),
+            Start: parseDate(e.Start_time),
+            End: parseDate(e.End_time),
+            IsDateOnly: e.Is_date_only,
+            Place: model.Place {
+                Name: e.Place.Name,
+                Lat: e.Place.Location.Latitude,
+                Long: e.Place.Location.Longitude,
+                Street: e.Place.Location.Street,
+                City: e.Place.Location.City,
+                Zip: e.Place.Location.Zip,
+            },
+        }
+
+        if event.IsValid() {
+            *events = append(*events, event)
+        }
+    }
 
     return nil
 }
 
+func parseDate(dt string) time.Time {
+    tm, _ := time.Parse("2006-01-02T15:04:05-0700", dt)
+    return tm
+}
+
+func getLink(id string) string {
+    return fmt.Sprintf("https://www.facebook.com/%s", id)
+}
