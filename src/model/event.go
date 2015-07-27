@@ -4,7 +4,7 @@ import "time"
 
 type Event struct {
     Id uint64
-	Name string
+    Name string
 	Desc string
 	Link string
 	Image string
@@ -12,7 +12,23 @@ type Event struct {
     End time.Time
     IsDateOnly bool
     Place Place
-    Categories []string
+    Tags []string
+}
+
+func FindEvents() *EventQuery {
+    // SQL query
+    return &EventQuery{}
+}
+
+func (e *Event) Store() {
+    if !e.IsDuplicate() {
+        // SQL query
+    }
+}
+
+func (e *Event) IsDuplicate() bool {
+    // SQL query
+    return false
 }
 
 func (e *Event) IsValid() bool {

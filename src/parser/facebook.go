@@ -55,10 +55,11 @@ type fbEventList struct {
 }
 
 
-func ParseEvents(url string, events *[]model.Event) (error) {
+func ParseEvents(url string, eventChan chan<- model.Event, errChan chan<- error) {
 
     if !strings.HasPrefix(url, FACEBOOK_PREFIX) {
-        return fmt.Errorf("ParseError: '%s' is not a valid facebook URL", url)
+        errChan <- fmt.Errorf("ParseError: '%s' is not a valid facebook URL", url)
+        return
     }
 
     page := url[len(FACEBOOK_PREFIX):]
@@ -66,16 +67,19 @@ func ParseEvents(url string, events *[]model.Event) (error) {
 
     resp, err := http.Get(req)
     if err != nil {
-        return err
+        errChan <- err
+        return
     }
     defer resp.Body.Close()
     
     var msg fbEventList
     if err := json.NewDecoder(resp.Body).Decode(&msg); err != nil {
-        return err
+        errChan <- err
+        return
     }
     if msg.Error != nil {
-        return fmt.Errorf("%s: %s", msg.Error.Type, msg.Error.Message)
+        errChan <- fmt.Errorf("%s: %s", msg.Error.Type, msg.Error.Message)
+        return
     }
 
     for _, e := range msg.Data {
@@ -97,11 +101,9 @@ func ParseEvents(url string, events *[]model.Event) (error) {
         }
 
         if event.IsValid() {
-            *events = append(*events, event)
+            eventChan <- event
         }
     }
-
-    return nil
 }
 
 func parseDate(dt string) time.Time {

@@ -8,15 +8,15 @@ import (
 )
 
 func main() {
-    events := make([]model.Event, 0, 20)
-    err := parser.ParseEvents("https://www.facebook.com/TwoFacesClub", &events)
+    eventChan := make(chan model.Event, 100)
+    errChan := make(chan error, 100)
 
-    if (err != nil) {
-        log.Fatal(err)
-        return
-    }
+    go parser.ParseEvents("https://www.facebook.com/TwoFacesClub", eventChan, errChan)
 
-    for _, v := range events {
-        fmt.Println(v.Start)
+    select {
+    case event := <-eventChan:
+        fmt.Println(event.Start)
+    case err := <-errChan:
+        log.Println(err)
     }
 }
