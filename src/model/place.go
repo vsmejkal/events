@@ -8,7 +8,7 @@ type Place struct {
     Street string
     City string
     Zip string
-	Categories []string
+	Tags []string
 }
 
 func (p *Place) IsValid() bool {

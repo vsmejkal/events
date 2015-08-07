@@ -21,9 +21,7 @@ func FindEvents() *EventQuery {
 }
 
 func (e *Event) Store() {
-	if !e.IsDuplicate() {
-		// SQL query
-	}
+	// SQL query
 }
 
 func (e *Event) IsDuplicate() bool {

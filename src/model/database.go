@@ -8,26 +8,27 @@ import (
 )
 
 const (
-    DB_USER = "postgres"
-    DB_PASS = "postgres"
-    DB_NAME = "pgtest"
+    DB_NAME = "eventsdb"
 )
 
 // Database handle
 var conn *sql.DB
 
-
 func Connect() (err error) {
-    dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s", DB_USER, DB_PASS, DB_NAME)
+    dbinfo := fmt.Sprintf("dbname=%s", DB_NAME)
     conn, err = sql.Open("postgres", dbinfo)
-
-    fmt.Println(err)
 
     if err != nil {
         log.Fatal(err)
     }
 
     return err
+}
+
+func Disconnect() {
+    if conn != nil {
+        conn.Close()
+    }
 }
 
 func GetConnection() *sql.DB {
