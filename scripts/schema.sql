@@ -10,16 +10,32 @@ CREATE TABLE event (
     image varchar(256),
     starttime timestamp NOT NULL,
     endtime timestamp NOT NULL,
-    dateonly boolean,
-    tags varchar(20)[]
+    dateonly boolean NOT NULL,
+    tags integer[] element references tag(id)
+    place integer NOT NULL references place(id)
 );
 
 CREATE TABLE place (
     id serial PRIMARY KEY,
     name varchar(100) NOT NULL,
+    description text,
     gps point NOT NULL,
     street varchar(100),
     city varchar(50),
     zip varchar(10),
-    tags varchar(20)[]
+    tags integer[] element references tag(id)
+);
+
+CREATE TABLE tag (
+    id serial PRIMARY KEY,
+    name varchar(25) NOT NULL,
+    label varchar(50)
+);
+
+CREATE TABLE source (
+    id serial PRIMARY KEY,
+    name varchar(100),
+    link varchar(256) NOT NULL,
+    visited timestamp,
+    place integer NOT NULL references place(id)
 );
