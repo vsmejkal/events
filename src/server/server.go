@@ -29,6 +29,8 @@ func main() {
         return
     }
 
+    fmt.Println("Results:", result)
+
     fmt.Println("Listening on port 8000...")
 
     http.HandleFunc("/", handleRoot)

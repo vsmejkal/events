@@ -12,7 +12,7 @@ type Event struct {
 	End      time.Time
 	DateOnly bool
 	Place    Place
-	Tags     []string
+	Tags     []int
 }
 
 func FindEvents() *EventQuery {
@@ -20,12 +20,21 @@ func FindEvents() *EventQuery {
 	return &EventQuery{}
 }
 
-func (e *Event) Store() {
-	// SQL query
+func (e *Event) Store() error {
+	if err := e.Place.Store(); err != nil {
+		return err
+	}
+
+	db := GetConnection()
+	_, err := db.Exec("INSERT INTO event(name, description, link, starttime, endtime) VALUES($1,$2,$3,$4);", "XXX", "YYY", "2012-12-09", "2012-12-09")
+    if (err != nil) {
+        fmt.Println(err)
+        return
+    }
 }
 
 func (e *Event) IsDuplicate() bool {
-	// SQL query
+	db := GetConnection()
 	return false
 }
 

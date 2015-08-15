@@ -16,10 +16,15 @@ var conn *sql.DB
 
 func Connect() (err error) {
     dbinfo := fmt.Sprintf("dbname=%s", DB_NAME)
-    conn, err = sql.Open("postgres", dbinfo)
 
+    conn, err = sql.Open("postgres", dbinfo)
     if err != nil {
-        log.Fatal(err)
+        log.Fatal("Database error: ", err)
+    }
+
+    err = conn.Ping()
+    if err != nil {
+        log.Fatal("Database error: ", err)
     }
 
     return err
