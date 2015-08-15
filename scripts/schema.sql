@@ -18,6 +18,7 @@ CREATE TABLE event (
 CREATE TABLE place (
     id serial PRIMARY KEY,
     name varchar(100) NOT NULL,
+    description text,
     gps point NOT NULL,
     street varchar(100),
     city varchar(50),
@@ -37,5 +38,4 @@ CREATE TABLE source (
     link varchar(256) NOT NULL,
     visited timestamp,
     place integer NOT NULL references place(id)
-
 );
