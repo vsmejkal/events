@@ -11,8 +11,6 @@ import (
 
 const (
 	GRAPH_API = "https://graph.facebook.com/v2.4/"
-
-	ACCESS_TOKEN = "CAACEdEose0cBALRKcML8CH2chxbnOlo1cczWDzLkHttvMFUIPsVhDhhva3tDDwibZAR5pbNSTeAEUtJLPXJmW2K3ppNAghxPhF8Fs7npvyg9jOgZAGKmiwRtrvR2mFpdilakrXnoO4ZASb6IjkdpdyP6TBaPvhZBErn0c3H7HSLad9wMyN0JvlkUVUEXmIbHZA5IEtZCQ7Q5shSMDxSZBo0"
 )
 
 type fbError struct {
@@ -56,11 +54,9 @@ func ParseEvents(url string, eventChan chan<- model.Event, errChan chan<- error)
 	}
 	
 	req := GRAPH_API + node + "/events" +
-		   "?access_token=" + ACCESS_TOKEN +
+		   "?access_token=" + FACEBOOK_APP_TOKEN +
 		   "&fields=id,name,description,start_time,end_time,place" +
 		   "&limit=50"
-
-	fmt.Println("REQ:", req)
 
 	resp, err := http.Get(req)
 	if err != nil {

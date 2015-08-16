@@ -10,7 +10,7 @@ import (
 
 func main() {
     sources := []string {
-        "https://www.facebook.com/pages/Letn%C3%AD-kino-Brno-na-Dvo%C5%99e-MdB/464222550388191",
+        "https://www.facebook.com/fledaclub",
     }
 
     for _, url := range sources {
