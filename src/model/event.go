@@ -1,18 +1,20 @@
 package model
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Event struct {
-	Id       uint64
+	Id       int64
 	Name     string
 	Desc     string
 	Link     string
 	Image    string
 	Start    time.Time
 	End      time.Time
-	DateOnly bool
+	Tags     []string
 	Place    Place
-	Tags     []int
 }
 
 func FindEvents() *EventQuery {
@@ -26,15 +28,27 @@ func (e *Event) Store() error {
 	}
 
 	db := GetConnection()
-	_, err := db.Exec("INSERT INTO event(name, description, link, starttime, endtime) VALUES($1,$2,$3,$4);", "XXX", "YYY", "2012-12-09", "2012-12-09")
-    if (err != nil) {
-        fmt.Println(err)
-        return
+
+	err := db.QueryRow("INSERT INTO event(name, description, link, image, starttime, endtime, tags, place) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id;",
+				e.Name,
+				e.Desc,
+				e.Link,
+				e.Image,
+				SerializeTime(e.Start),
+				SerializeTime(e.End),
+				SerializeStringArray(e.Tags),
+				e.Place.Id,
+			).Scan(&e.Id);
+    
+    if err != nil {
+        return fmt.Errorf("Event.Store() error: %s", err)
     }
+
+    return nil
 }
 
 func (e *Event) IsDuplicate() bool {
-	db := GetConnection()
+	// db := GetConnection()
 	return false
 }
 
@@ -42,6 +56,5 @@ func (e *Event) IsValid() bool {
 	return e.Name != "" &&
 		e.Link != "" &&
 		e.Start.After(time.Now()) &&
-		e.End.After(time.Now()) &&
 		e.Place.IsValid()
 }

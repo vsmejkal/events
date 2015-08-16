@@ -2,40 +2,143 @@
 CREATE EXTENSION cube;
 CREATE EXTENSION earthdistance;
 
+CREATE TABLE place (
+    id serial PRIMARY KEY,
+    name varchar(200) NOT NULL,
+    description text,
+    gps point NOT NULL,
+    street varchar(200),
+    city varchar(200),
+    zip varchar(10),
+    phone varchar(20),
+    web varchar(100),
+    tags varchar(25)[]
+);
+
 CREATE TABLE event (
     id serial PRIMARY KEY,
     name varchar(100) NOT NULL,
     description text,
-    link varchar(256) NOT NULL,
-    image varchar(256),
+    link varchar(500) NOT NULL,
+    image varchar(500),
     starttime timestamp NOT NULL,
-    endtime timestamp NOT NULL,
-    dateonly boolean NOT NULL,
-    tags integer[] element references tag(id)
+    endtime timestamp,
+    tags varchar(25)[],
     place integer NOT NULL references place(id)
-);
-
-CREATE TABLE place (
-    id serial PRIMARY KEY,
-    name varchar(100) NOT NULL,
-    description text,
-    gps point NOT NULL,
-    street varchar(100),
-    city varchar(50),
-    zip varchar(10),
-    tags integer[] element references tag(id)
-);
-
-CREATE TABLE tag (
-    id serial PRIMARY KEY,
-    name varchar(25) NOT NULL,
-    label varchar(50)
 );
 
 CREATE TABLE source (
     id serial PRIMARY KEY,
     name varchar(100),
-    link varchar(256) NOT NULL,
+    url varchar(500) NOT NULL,
     visited timestamp,
-    place integer NOT NULL references place(id)
+    place integer references place(id)
 );
+
+
+INSERT INTO source (url) VALUES
+    ('https://www.facebook.com/fledaclub'),
+    ('https://www.facebook.com/kabinetmuz'),
+    ('https://www.facebook.com/Melodka.cz'),
+    ('https://www.facebook.com/favalcz'),
+    ('https://www.facebook.com/pages/Mersey-klub-Brno/149025198548565'),
+    ('https://www.facebook.com/Klub.Alterna'),
+    ('https://www.facebook.com/starapekarna'),
+    ('https://www.facebook.com/desertbrno'),
+    ('https://www.facebook.com/pages/Vesel%C3%A1-va%C4%8Dice/161305307286151'),
+    ('https://www.facebook.com/pages/Klub-%C5%A0ELEPKA/207146942634999'),
+    ('https://www.facebook.com/studentpartySemilasso'),
+    ('https://www.facebook.com/ReisyClub'),
+    ('https://www.facebook.com/SonoCentrum'),
+    ('https://www.facebook.com/karaburgut'),
+    ('https://www.facebook.com/Sklenick'),
+    ('https://www.facebook.com/leitnerka'),
+    ('https://www.facebook.com/perpetuumklub'),
+    ('https://www.facebook.com/Industrabrno'),
+    ('https://www.facebook.com/mala.amerika.brno'),
+    ('https://www.facebook.com/Livingstone.club'),
+    ('https://www.facebook.com/cafeprah'),
+    ('https://www.facebook.com/vegalitebrno'),
+    ('https://www.facebook.com/musilkaksomega'),
+    ('https://www.facebook.com/elevenclub'),
+    ('https://www.facebook.com/Bastilamusic'),
+    ('https://www.facebook.com/pages/Jazz-bar-U-kou%C5%99%C3%ADc%C3%ADho-kr%C3%A1l%C3%ADka-official-site/130274893694606'),
+    ('https://www.facebook.com/vyhlidkacafe'),
+    ('https://www.facebook.com/TwoFacesBar'),
+    ('https://www.facebook.com/TwoFacesClub'),
+    ('https://www.facebook.com/CLUBWASH'),
+    ('https://www.facebook.com/YachtMusicPub'),
+    ('https://www.facebook.com/klub.m13'),
+    ('https://www.facebook.com/7nebe'),
+    ('https://www.facebook.com/staratkalcovna.cz'),
+    ('https://www.facebook.com/TabarinClub'),
+    ('https://www.facebook.com/pages/Andel-Cafe-Brno/161767873865667'),
+    ('https://www.facebook.com/musiclabbrno'),
+    ('https://www.facebook.com/pages/RUSTY-NAIL-Music-Club/551585758206006'),
+    ('https://www.facebook.com/abajoclub'),
+    ('https://www.facebook.com/OldiesMusicClubFicak'),
+    ('https://www.facebook.com/mandarinclubbrno'),
+    ('https://www.facebook.com/pages/RATEJNA-music-restaurant/278880934245'),
+    ('https://www.facebook.com/schrottbrno'),
+    ('https://www.facebook.com/nadraze'),
+    ('https://www.facebook.com/pages/VIBE-club/1595145777437797'),
+    ('https://www.facebook.com/donlagarto'),
+    ('https://www.facebook.com/ahoybrno'),
+    ('https://www.facebook.com/caribicbrno'),
+    ('https://www.facebook.com/BrnoTheEight'),
+    ('https://www.facebook.com/DejaVuBrno'),
+    ('https://www.facebook.com/upalecka'),
+    ('https://www.facebook.com/kabaretspacek'),
+    ('https://www.facebook.com/netopyrbrno'),
+    ('https://www.facebook.com/charlieshat'),
+    ('https://www.facebook.com/KavarnaTrojka'),
+    ('https://www.facebook.com/sklepniscena'),
+    ('https://www.facebook.com/tresgallos2'),
+    
+    ('https://www.facebook.com/kinoscalabrno'),
+    ('https://www.facebook.com/artbrno'),
+    ('https://www.facebook.com/LetniKinoSpilberk'),
+    ('https://www.facebook.com/pages/Letn%C3%AD-kino-Brno-na-Dvo%C5%99e-MdB/464222550388191'),
+    ('https://www.facebook.com/Kino.Lucerna.Brno'),
+    ('https://www.facebook.com/pages/Kinokav%C3%A1rna/355040474608176'),
+    
+    ('https://www.facebook.com/husanaprovazku'),
+    ('https://www.facebook.com/operadiversa'),
+    ('https://www.facebook.com/janacekopera'),
+    ('https://www.facebook.com/cinohrandb'),
+    ('https://www.facebook.com/DivadloNaOrli'),
+    ('https://www.facebook.com/bezbarierovedivadlobarka'),
+    ('https://www.facebook.com/divadlobolkapolivky'),
+    ('https://www.facebook.com/rubinbrno'),
+    ('https://www.facebook.com/divadlokorab'),
+    ('https://www.facebook.com/divadlopolarka'),
+    ('https://www.facebook.com/hadivadlo'),
+    ('https://www.facebook.com/dsparadox'),
+    ('https://www.facebook.com/mestske.divadlo.brno'),
+    ('https://www.facebook.com/studioMarta'),
+    
+    ('https://www.facebook.com/pages/FAIT-Gallery/198731196900551'),
+    ('https://www.facebook.com/ragallery'),
+
+    ('https://www.facebook.com/hvezdarna.brno'),
+    ('https://www.facebook.com/tmbrno'),
+    ('https://www.facebook.com/pages/Koupali%C5%A1t%C4%9B-Krav%C3%AD-hora/44095453644'),
+    ('https://www.facebook.com/mzk.cz'),
+    ('https://www.facebook.com/klubcestovatelubrno'),
+    ('https://www.facebook.com/masarykova.univerzita'),
+    ('https://www.facebook.com/phil.muni.cz'),
+    ('https://www.facebook.com/filharmoniebrno'),
+    ('https://www.facebook.com/pdfmu'),
+    ('https://www.facebook.com/PrfMUni'),
+    ('https://www.facebook.com/MUNIEBrno'),
+    ('https://www.facebook.com/galerievankovka'),
+    ('https://www.facebook.com/vidabrno'),
+    ('https://www.facebook.com/ticbrno'),
+    ('https://www.facebook.com/FactoryFashionMarket'),
+    ('https://www.facebook.com/pages/Spirit-Bar/442458112553968'),
+    ('https://www.facebook.com/expeditionclubbrno'),
+    ('https://www.facebook.com/pages/Kulturn%C3%AD-Centrum-L%C3%AD%C5%A1e%C5%88/472564170044'),
+    ('https://www.facebook.com/slevarna'),
+    ('https://www.facebook.com/lasershowhallbrno'),
+    ('https://www.facebook.com/bbakaly'),
+    ('https://www.facebook.com/tanecnak');

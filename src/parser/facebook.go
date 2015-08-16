@@ -10,13 +10,9 @@ import (
 )
 
 const (
-	FACEBOOK_PREFIX = "https://www.facebook.com/"
+	GRAPH_API = "https://graph.facebook.com/v2.4/"
 
-	FACEBOOK_API = "https://graph.facebook.com/v2.3/"
-
-	EVENT_FIELDS = "id,name,description,start_time,end_time,is_date_only,place"
-
-	ACCESS_TOKEN = "CAACEdEose0cBABPr5uft5ktSLPr4mluNShYyAQFZADejEQIAGjYxtuP8c2tpxnfy6LHxynBGaclcVgfysyZCgimZAaI4PFPnZANlCFR48HaapvZCLAhlExBvKVkP6U7VseerorOWkcZAQGF2PKteT4D1ZBn0RUrZA6m83WQ6Swljzc4zNCEmXBB1NX6LDxUZCteXntz2z0u8KmRW2ZCdarDwM4OfmdLjKkXJ4ZD"
+	ACCESS_TOKEN = "CAACEdEose0cBALRKcML8CH2chxbnOlo1cczWDzLkHttvMFUIPsVhDhhva3tDDwibZAR5pbNSTeAEUtJLPXJmW2K3ppNAghxPhF8Fs7npvyg9jOgZAGKmiwRtrvR2mFpdilakrXnoO4ZASb6IjkdpdyP6TBaPvhZBErn0c3H7HSLad9wMyN0JvlkUVUEXmIbHZA5IEtZCQ7Q5shSMDxSZBo0"
 )
 
 type fbError struct {
@@ -44,7 +40,6 @@ type fbEvent struct {
 	Description  string
 	Start_time   string
 	End_time     string
-	Is_date_only bool
 	Place        fbPlace
 }
 
@@ -54,14 +49,18 @@ type fbEventList struct {
 }
 
 func ParseEvents(url string, eventChan chan<- model.Event, errChan chan<- error) {
-
-	if !strings.HasPrefix(url, FACEBOOK_PREFIX) {
-		errChan <- fmt.Errorf("ParseError: '%s' is not a valid facebook URL", url)
+	node, err := getNodeName(url)
+	if err != nil {
+		errChan <- err
 		return
 	}
+	
+	req := GRAPH_API + node + "/events" +
+		   "?access_token=" + ACCESS_TOKEN +
+		   "&fields=id,name,description,start_time,end_time,place" +
+		   "&limit=50"
 
-	page := url[len(FACEBOOK_PREFIX):]
-	req := FACEBOOK_API + page + "/events" + "?access_token=" + ACCESS_TOKEN + "&fields=" + EVENT_FIELDS
+	fmt.Println("REQ:", req)
 
 	resp, err := http.Get(req)
 	if err != nil {
@@ -81,14 +80,13 @@ func ParseEvents(url string, eventChan chan<- model.Event, errChan chan<- error)
 	}
 
 	for _, e := range msg.Data {
-		event := model.Event{
+		eventChan <- model.Event {
 			Name:     e.Name,
 			Desc:     e.Description,
 			Link:     createLink(e.Id),
 			Start:    parseDate(e.Start_time),
 			End:      parseDate(e.End_time),
-			DateOnly: e.Is_date_only,
-			Place: model.Place{
+			Place: model.Place {
 				Name:   e.Place.Name,
 				Lat:    e.Place.Location.Latitude,
 				Long:   e.Place.Location.Longitude,
@@ -97,16 +95,26 @@ func ParseEvents(url string, eventChan chan<- model.Event, errChan chan<- error)
 				Zip:    e.Place.Location.Zip,
 			},
 		}
-
-		if event.IsValid() {
-			eventChan <- event
-		}
 	}
 }
 
-func parseDate(dt string) time.Time {
-	tm, _ := time.Parse("2006-01-02T15:04:05-0700", dt)
+func parseDate(date string) time.Time {
+	tm, err := time.Parse("2006-01-02T15:04:05-0700", date)
+
+	// Try date only
+	if err != nil {
+		tm, _ = time.Parse("2006-01-02", date)
+	}
+
 	return tm
+}
+
+func getNodeName(url string) (string, error) {
+	if !strings.HasPrefix(url, "https://www.facebook.com/") {
+		return "", fmt.Errorf("ParseError: '%s' is not a valid facebook URL", url)
+	}
+
+	return url[strings.LastIndex(url, "/") + 1:], nil
 }
 
 func createLink(id string) string {

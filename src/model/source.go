@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Source struct {
-    Id uint64
+    Id int64
     Url string
     Place Place
     Visited time.Time
