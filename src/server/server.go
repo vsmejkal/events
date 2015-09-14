@@ -10,26 +10,19 @@ import (
 
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {
-    io.WriteString(w, "Hello!")
+    events := model.GetEvents()
+
+    for event := range events {
+        fmt.
+    }
 }
 
 func main() {
-    var err error
-    err = model.Connect()
-    defer model.Disconnect()
+    err := model.Connect()
     if err != nil {
-        fmt.Errorf("Cannot establish db connection: %s", err)
-        return
+        fmt.Fatalf("Cannot establish db connection: %s", err)
     }
-
-    db := model.GetConnection()
-    result, err := db.Exec("INSERT INTO event(name, link, starttime, endtime) VALUES($1,$2,$3,$4);", "XXX", "YYY", "2012-12-09", "2012-12-09")
-    if (err != nil) {
-        fmt.Println(err)
-        return
-    }
-
-    fmt.Println("Results:", result)
+    defer model.Disconnect()
 
     fmt.Println("Listening on port 8000...")
 

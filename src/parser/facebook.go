@@ -23,8 +23,8 @@ type fbPlace struct {
 	Id       string
 	Name     string
 	Location struct {
-		Latitude  float64
-		Longitude float64
+		Latitude  float32
+		Longitude float32
 		Street    string
 		City      string
 		Zip       string

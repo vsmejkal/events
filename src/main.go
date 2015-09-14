@@ -1,22 +1,21 @@
 package main
 
 import (
-	"fmt"
-	"log"
+    "fmt"
 	"model"
-	"parser"
+    "time"
 )
 
 func main() {
-	eventChan := make(chan model.Event, 100)
-	errChan := make(chan error, 100)
+    query := model.EventQuery{
+        From: model.Datetime{time.Now()},
+    }
 
-	go parser.ParseEvents("https://www.facebook.com/TwoFacesClub", eventChan, errChan)
+    for event := range query.Search() {
+	   fmt.Println(event.Name) 
+    }
 
-	select {
-	case event := <-eventChan:
-		fmt.Println(event.Name)
-	case err := <-errChan:
-		log.Println(err)
-	}
+    if err := query.Error(); err != nil {
+        fmt.Println(err)
+    }
 }

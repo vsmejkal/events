@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"time"
+	"database/sql"
 )
 
 type Event struct {
@@ -11,15 +12,10 @@ type Event struct {
 	Desc     string
 	Link     string
 	Image    string
-	Start    time.Time
-	End      time.Time
-	Tags     []string
+	Start    Datetime
+	End      Datetime
+	Tags     Tags
 	Place    Place
-}
-
-func FindEvents() *EventQuery {
-	// SQL query
-	return &EventQuery{}
 }
 
 func (e *Event) Store() error {
@@ -28,15 +24,14 @@ func (e *Event) Store() error {
 	}
 
 	db := GetConnection()
-
 	err := db.QueryRow("INSERT INTO event(name, description, link, image, starttime, endtime, tags, place) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id;",
 				e.Name,
 				e.Desc,
 				e.Link,
 				e.Image,
-				SerializeTime(e.Start),
-				SerializeTime(e.End),
-				SerializeStringArray(e.Tags),
+				e.Start.Encode(),
+				e.End.Encode(),
+				e.Tags.Encode(),
 				e.Place.Id,
 			).Scan(&e.Id);
     
@@ -47,14 +42,25 @@ func (e *Event) Store() error {
     return nil
 }
 
+func (e *Event) Update() error {
+	return nil
+}
+
+func (e *Event) Exists() bool {
+	db := GetConnection()
+	err := db.QueryRow("SELECT TOP 1 FROM event WHERE link = ?;", e.Link).Scan()
+
+	return err != sql.ErrNoRows
+}
+
 func (e *Event) IsDuplicate() bool {
 	// db := GetConnection()
-	return false
+	return e.Exists()
 }
 
 func (e *Event) IsValid() bool {
 	return e.Name != "" &&
-		e.Link != "" &&
-		e.Start.After(time.Now()) &&
-		e.Place.IsValid()
+		   e.Link != "" &&
+		   e.Start.After(time.Now()) &&
+		   e.Place.IsValid()
 }

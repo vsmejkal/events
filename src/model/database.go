@@ -48,25 +48,25 @@ func GetConnection() *sql.DB {
     return conn
 }
 
-func SerializeTime(tm time.Time) string {
+func serializeTime(tm time.Time) string {
     return tm.Format(time.RFC3339)
 }
 
-func DeserializeTime(data string) time.Time {
+func deserializeTime(data string) time.Time {
     tm, _ := time.Parse(time.RFC3339, data)
-
+    
     return tm
 }
 
-func SerializeStringArray(arr []string) string {
+func serializeStringArr(arr []string) string {
     return "{" + strings.Join(arr, ",") + "}"
 }
 
-func DeserializeStringArray(data string) []string {
+func deserializeStringArr(data string) []string {
     return strings.Split(data[1:len(data)-1], ",")
 }
 
-func SerializeIntArray(arr []int) string {
+func serializeIntArr(arr []int) string {
     var buf bytes.Buffer
 
     // Opening bracket
@@ -88,13 +88,13 @@ func SerializeIntArray(arr []int) string {
     return buf.String()
 }
 
-func DeserializeIntArray(data string) []int {
+func deserializeIntArr(data string) []int {
     strs := strings.Split(data, ",")
-    ints := make([]int, len(strs), len(strs))
+    arr := make([]int, len(strs), len(strs))
 
     for i, n := range strs {
-        ints[i], _ = strconv.Atoi(n)
+        arr[i], _ = strconv.Atoi(n)
     }
 
-    return ints
+    return arr
 }
