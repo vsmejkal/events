@@ -84,15 +84,13 @@ func (q *EventQuery) Search() <-chan Event {
 
 		for rows.Next() {
 			var e Event
-			var start, end, tags, gps string
+			var tags, gps string
 
-			if err := rows.Scan(&e.Id, &e.Name, &e.Desc, &e.Link, &e.Image, &start, &end, &tags, &e.Place.Name, &gps); err != nil {
+			if err := rows.Scan(&e.Id, &e.Name, &e.Desc, &e.Link, &e.Image, &e.Start.Time, &e.End.Time, &tags, &e.Place.Name, &gps); err != nil {
 			    q.err = err
 			    return
 			}
 
-			e.Start.Decode(start)
-			e.End.Decode(end)
 			e.Tags.Decode(tags)
 			e.Place.Gps.Decode(gps)
 			out <- e
@@ -125,7 +123,7 @@ func (q *EventQuery) composeSQL() string {
 		if needAnd {
 			sql.WriteString(" AND")
 		}
-		sql.WriteString(" starttime >= " + q.From.Encode())
+		sql.WriteString(" starttime >= '" + q.From.Encode() + "'")
 	}
 
 	if q.To.IsValid() {
@@ -146,6 +144,8 @@ func (q *EventQuery) composeSQL() string {
 	}
 
 	sql.WriteString(";")
+
+	fmt.Println(sql.String())
 
 	return sql.String()
 }

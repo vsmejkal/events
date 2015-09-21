@@ -22,7 +22,7 @@ func (p *Place) Store() error {
 				p.Street,
 				p.City,
 				p.Zip,
-				p.Tags.Encode(),	
+				p.Tags.Encode(),
 			).Scan(&p.Id);
 
 	if err != nil {

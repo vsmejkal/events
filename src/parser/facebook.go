@@ -23,8 +23,8 @@ type fbPlace struct {
 	Id       string
 	Name     string
 	Location struct {
-		Latitude  float32
-		Longitude float32
+		Latitude  float64
+		Longitude float64
 		Street    string
 		City      string
 		Zip       string
@@ -84,8 +84,7 @@ func ParseEvents(url string, eventChan chan<- model.Event, errChan chan<- error)
 			End:      parseDate(e.End_time),
 			Place: model.Place {
 				Name:   e.Place.Name,
-				Lat:    e.Place.Location.Latitude,
-				Long:   e.Place.Location.Longitude,
+				Gps:	model.Gps{e.Place.Location.Latitude, e.Place.Location.Longitude},
 				Street: e.Place.Location.Street,
 				City:   e.Place.Location.City,
 				Zip:    e.Place.Location.Zip,
@@ -94,15 +93,16 @@ func ParseEvents(url string, eventChan chan<- model.Event, errChan chan<- error)
 	}
 }
 
-func parseDate(date string) time.Time {
+func parseDate(date string) model.Datetime {
+	// Date and time
 	tm, err := time.Parse("2006-01-02T15:04:05-0700", date)
 
-	// Try date only
+	// Only date
 	if err != nil {
 		tm, _ = time.Parse("2006-01-02", date)
 	}
 
-	return tm
+	return model.Datetime{tm}
 }
 
 func getNodeName(url string) (string, error) {
