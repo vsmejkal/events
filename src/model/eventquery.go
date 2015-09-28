@@ -85,7 +85,6 @@ func (q *EventQuery) Search() <-chan Event {
 		for rows.Next() {
 			var e Event
 			var tags, gps string
-
 			if err := rows.Scan(&e.Id, &e.Name, &e.Desc, &e.Link, &e.Image, &e.Start.Time, &e.End.Time, &tags, &e.Place.Name, &gps); err != nil {
 			    q.err = err
 			    return
@@ -111,29 +110,22 @@ func (q *EventQuery) composeSQL() string {
 
 	sql.WriteString(" SELECT e.id, e.name, e.description, e.link, e.image, e.starttime, e.endtime, e.tags, p.name, p.gps")
 	sql.WriteString(" FROM event e INNER JOIN place p ON e.place = p.id")
-	sql.WriteString(" WHERE");
-	needAnd := false
+	sql.WriteString(" WHERE 1=1");
 
 	if q.Name != "" {
-		sql.WriteString(fmt.Sprintf(" name ~* '.*%s.*'", q.Name))
-		needAnd = true
+		sql.WriteString(fmt.Sprintf(" AND name ~* '.*%s.*'", q.Name))
 	}
 
 	if q.From.IsValid() {
-		if needAnd {
-			sql.WriteString(" AND")
-		}
-		sql.WriteString(" starttime >= '" + q.From.Encode() + "'")
+		sql.WriteString(" AND starttime >= '" + q.From.Encode() + "'")
 	}
 
 	if q.To.IsValid() {
-		if needAnd {
-			sql.WriteString(" AND")
-		}
-		sql.WriteString(" starttime <= " + q.To.Encode())
+		sql.WriteString(" AND starttime <= " + q.To.Encode())
 	}
 
-	sql.WriteString(fmt.Sprintf(" ORDER BY gps <-> point(%.4f,%.4f)", q.Lat, q.Long))
+	sql.WriteString(" ORDER BY starttime")
+	// sql.WriteString(fmt.Sprintf(" ORDER BY gps <-> point(%.4f,%.4f)", q.Lat, q.Long))
 	
 	if q.Limit > 0 {
 		sql.WriteString(fmt.Sprintf(" LIMIT %d", q.Limit))
@@ -145,7 +137,7 @@ func (q *EventQuery) composeSQL() string {
 
 	sql.WriteString(";")
 
-	fmt.Println(sql.String())
+	// fmt.Println(sql.String())
 
 	return sql.String()
 }

@@ -3,32 +3,40 @@ package main
 import (
     "fmt"
     "net/http"
+    "html/template"
     "log"
-    "io"
+    "time"
     "model"
 )
 
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {
-    events := model.GetEvents()
+    tpl, err := template.ParseFiles("views/index.html")
+    if err != nil {
+        log.Fatalln(err)
+    }
 
-    for event := range events {
-        fmt.
+    query := model.EventQuery{ From: model.Datetime{ time.Now() } }
+    events := query.Search()
+ 
+    tpl.Execute(w, events)
+
+    if err := query.Error(); err != nil {
+        log.Println("EventQuery error:", err)
     }
 }
 
 func main() {
     err := model.Connect()
     if err != nil {
-        fmt.Fatalf("Cannot establish db connection: %s", err)
+        log.Fatal("Cannot establish db connection: %s", err)
     }
     defer model.Disconnect()
 
-    fmt.Println("Listening on port 8000...")
+    fmt.Println("Listening on port 8080...")
 
     http.HandleFunc("/", handleRoot)
-    err = http.ListenAndServe(":8000", nil)
-
+    err = http.ListenAndServe(":8080", nil)
     if err != nil {
         log.Fatal("ListenAndServe: ", err)
     }
