@@ -14,14 +14,17 @@
 		}
 		table.events {
 			margin: 5vmin auto 0 auto;
-			font-size: 3.5vmin;
-		}
-		table.events td.date {
-			white-space: nowrap;
+			font-size: 3.3vmin;
 		}
 		table.events td {
 			text-align: left;
-			padding: 1vh 2vw;
+			padding: 0.5vh 2vw;
+		}
+		table.events td.date {
+			padding-right: 0;
+		}
+		table.events td.time {
+			padding-left: 1em;
 		}
 		table.events a {
 			color: #00B47B;
@@ -34,7 +37,9 @@
 	<table class="events">
 	{{range .}}
 		<tr>
-			<td class="date">{{.Start.Format "02/01 15:04"}}</td>
+			<!-- <td class="date">{{.Start.Format "02/01 15:04"}}</td> -->
+			<td class="date">{{.Start.HumanDate}}</td>
+			<td class="time">{{.Start.Format "15:04"}}</td>
 			<td class="name"><a href="{{.Link}}" target="_blank">{{.Name}}</a></td>
 			<td class="place">{{.Place.Name}}</td>
 		</tr>

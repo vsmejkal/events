@@ -19,7 +19,10 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
     query := model.EventQuery{ From: model.Datetime{ time.Now() } }
     events := query.Search()
  
-    tpl.Execute(w, events)
+    err = tpl.Execute(w, events)
+    if err != nil {
+        log.Println(err)
+    }
 
     if err := query.Error(); err != nil {
         log.Println("EventQuery error:", err)
