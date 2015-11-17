@@ -8,16 +8,37 @@ import (
 	"parser"
 )
 
-func main() {
-	sources := []string {
-		"https://www.facebook.com/fledaclub",
-	}
+func getSources() (sources []string) {
+    sources = make([]string, 0)
 
-	for _, url := range sources {
+    db := model.GetConnection()
+    rows, err := db.Query("SELECT url FROM source;")
+    if err != nil {
+        log.Println(err)
+        return
+    }
+
+    var url string
+    for rows.Next() {
+        if err = rows.Scan(&url); err != nil {
+            log.Println(err)
+        } else {
+            sources = append(sources, url)
+        }
+    }
+    if err = rows.Err(); err != nil {
+        log.Println(err)
+    }
+
+    return
+}
+
+func main() {
+	for _, url := range getSources() {
+        fmt.Println("\nParsing", url, "...")
+
 		eventChan := make(chan model.Event, 100)
 		errChan := make(chan error, 100)
-
-		fmt.Println("Parsing", url, "...")
 
 		go func() {
 			parser.ParseEvents(url, eventChan, errChan)
@@ -32,13 +53,11 @@ func main() {
 				}
 
 				if event.IsValid() {
-					fmt.Println("NEW:", event.Name, event.Start)
+					fmt.Println("  ", event.Name, event.Start)
 					
 					if err := event.Store(); err != nil {
 						log.Println(err)
 					}
-				} else {
-					fmt.Println("OLD:", event.Name, event.Start)
 				}
 
 			case err := <-errChan:
@@ -46,6 +65,7 @@ func main() {
 			}
 		}
 
-		time.Sleep(1000 * time.Millisecond)
+        // Primitive load balancing
+		time.Sleep(5 * time.Second)
 	}
 }
