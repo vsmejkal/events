@@ -10,13 +10,26 @@ import (
 )
 
 
+func getEventsQuery() model.EventQuery {
+	// From today
+	year, month, day := time.Now().Date()
+	from := time.Date(year, month, day, 0, 0, 0, 0, time.Local)
+	// To one week ahead
+	to := time.Now().Add(7 * 24 * time.Hour)
+
+	return model.EventQuery{
+		From: model.Datetime{from},
+		To: model.Datetime{to},
+	}
+}
+
 func handleRoot(w http.ResponseWriter, r *http.Request) {
 	tpl, err := template.ParseFiles("views/index.html")
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	query := model.EventQuery{ From: model.Datetime{ time.Now() } }
+	query := getEventsQuery()
 	events := query.Search()
  
 	err = tpl.Execute(w, events)

@@ -74,12 +74,12 @@ func (q *EventQuery) composeSQL() string {
 		sql.WriteString(fmt.Sprintf(" AND name ~* '.*%s.*'", q.Name))
 	}
 
-	if q.From.IsZero() {
+	if !q.From.IsZero() {
 		sql.WriteString(" AND starttime >= '" + q.From.Encode() + "'")
 	}
 
-	if q.To.IsZero() {
-		sql.WriteString(" AND starttime <= " + q.To.Encode())
+	if !q.To.IsZero() {
+		sql.WriteString(" AND starttime <= '" + q.To.Encode() + "'")
 	}
 
 	sql.WriteString(" ORDER BY starttime")
