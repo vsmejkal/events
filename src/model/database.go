@@ -1,102 +1,98 @@
 package model
 
 import (
-    "fmt"
-    "log"
-    "time"
-    "bytes"
-    "strings"
-    "strconv"
-    "database/sql"
-    _ "github.com/lib/pq"
+	"fmt"
+	"log"
+	"time"
+	"bytes"
+	"strings"
+	"strconv"
+	"database/sql"
+	_ "github.com/lib/pq"
 
-    "config"
-)
-
-const (
-    
+	"config"
 )
 
 // Database handle
 var conn *sql.DB
 
 func Connect() (err error) {
-    dbinfo := fmt.Sprintf("dbname=%s", config.DATABASE_NAME)
+	dbinfo := fmt.Sprintf("dbname=%s", config.DATABASE_NAME)
 
-    conn, err = sql.Open("postgres", dbinfo)
-    if err != nil {
-        log.Fatal("Database error: ", err)
-    }
+	conn, err = sql.Open("postgres", dbinfo)
+	if err != nil {
+		log.Fatal("Database error: ", err)
+	}
 
-    err = conn.Ping()
-    if err != nil {
-        log.Fatal("Database error: ", err)
-    }
+	err = conn.Ping()
+	if err != nil {
+		log.Fatal("Database error: ", err)
+	}
 
-    return err
+	return err
 }
 
 func Disconnect() {
-    if conn != nil {
-        conn.Close()
-    }
+	if conn != nil {
+		conn.Close()
+	}
 }
 
 func GetConnection() *sql.DB {
-    if conn == nil {
-        Connect()
-    }
+	if conn == nil {
+		Connect()
+	}
 
-    return conn
+	return conn
 }
 
 func serializeTime(tm time.Time) string {
-    return tm.Format(time.RFC3339)
+	return tm.Format(time.RFC3339)
 }
 
 func deserializeTime(data string) time.Time {
-    tm, _ := time.Parse(time.RFC3339, data)
-    
-    return tm
+	tm, _ := time.Parse(time.RFC3339, data)
+	
+	return tm
 }
 
 func serializeStringArr(arr []string) string {
-    return "{" + strings.Join(arr, ",") + "}"
+	return "{" + strings.Join(arr, ",") + "}"
 }
 
 func deserializeStringArr(data string) []string {
-    return strings.Split(data[1:len(data)-1], ",")
+	return strings.Split(data[1:len(data)-1], ",")
 }
 
 func serializeIntArr(arr []int) string {
-    var buf bytes.Buffer
+	var buf bytes.Buffer
 
-    // Opening bracket
-    buf.WriteString("{")
+	// Opening bracket
+	buf.WriteString("{")
 
-    for _, n := range arr  {
-        buf.WriteString(strconv.Itoa(n))
-        buf.WriteString(",")
-    }
+	for _, n := range arr  {
+		buf.WriteString(strconv.Itoa(n))
+		buf.WriteString(",")
+	}
 
-    // Remove trailing comma
-    if buf.Len() > 0 {
-        buf.Truncate(buf.Len() - 1)
-    }
+	// Remove trailing comma
+	if buf.Len() > 0 {
+		buf.Truncate(buf.Len() - 1)
+	}
 
-    // Closing bracket
-    buf.WriteString("}")
+	// Closing bracket
+	buf.WriteString("}")
 
-    return buf.String()
+	return buf.String()
 }
 
 func deserializeIntArr(data string) []int {
-    strs := strings.Split(data, ",")
-    arr := make([]int, len(strs), len(strs))
+	strs := strings.Split(data, ",")
+	arr := make([]int, len(strs), len(strs))
 
-    for i, n := range strs {
-        arr[i], _ = strconv.Atoi(n)
-    }
+	for i, n := range strs {
+		arr[i], _ = strconv.Atoi(n)
+	}
 
-    return arr
+	return arr
 }
