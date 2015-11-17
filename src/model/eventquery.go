@@ -6,7 +6,6 @@ import (
 )
 
 type SortType int
-
 const (
 	DISTANCE SortType = iota
 	IMPORTANCE
@@ -23,50 +22,9 @@ type EventQuery struct {
 	Limit  uint32
 	Offset uint32
 
-	// private
 	err    error
 }
 
-/*func (q *EventQuery) Name(name string) *EventQuery {
-	q.name = name
-	return q
-}
-
-func (q *EventQuery) From(from time.Time) *EventQuery {
-	q.from = from
-	return q
-}
-
-func (q *EventQuery) To(to time.Time) *EventQuery {
-	q.to = to
-	return q
-}
-
-func (q *EventQuery) Position(lat float32, long float32) *EventQuery {
-	q.lat = lat
-	q.long = long
-	return q
-}
-
-func (q *EventQuery) Tags(tags []string) *EventQuery {
-	q.tags = tags
-	return q
-}
-
-func (q *EventQuery) SortBy(sort SortType) *EventQuery {
-	q.sort = sort
-	return q
-}
-
-func (q *EventQuery) Limit(limit uint32) *EventQuery {
-	q.limit = limit
-	return q
-}
-
-func (q *EventQuery) Offset(offset uint32) *EventQuery {
-	q.offset = offset
-	return q
-}*/
 
 func (q *EventQuery) Search() <-chan Event {
 	out := make(chan Event)
@@ -116,11 +74,11 @@ func (q *EventQuery) composeSQL() string {
 		sql.WriteString(fmt.Sprintf(" AND name ~* '.*%s.*'", q.Name))
 	}
 
-	if q.From.IsValid() {
+	if q.From.IsZero() {
 		sql.WriteString(" AND starttime >= '" + q.From.Encode() + "'")
 	}
 
-	if q.To.IsValid() {
+	if q.To.IsZero() {
 		sql.WriteString(" AND starttime <= " + q.To.Encode())
 	}
 

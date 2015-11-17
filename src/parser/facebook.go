@@ -7,10 +7,9 @@ import (
 	"net/http"
 	"strings"
 	"time"
-)
+	"strconv"
 
-const (
-	GRAPH_API = "https://graph.facebook.com/v2.4/"
+	"config"
 )
 
 type fbError struct {
@@ -53,10 +52,10 @@ func ParseEvents(url string, eventChan chan<- model.Event, errChan chan<- error)
 		return
 	}
 	
-	req := GRAPH_API + node + "/events" +
-		   "?access_token=" + FACEBOOK_APP_TOKEN +
+	req := config.FACEBOOK_GRAPH_API + node + "/events" +
+		   "?access_token=" + config.FACEBOOK_APP_TOKEN +
 		   "&fields=id,name,description,start_time,end_time,place" +
-		   "&limit=50"
+		   "&limit=" + strconv.Itoa(config.FACEBOOK_EVENTS_LIMIT)
 
 	resp, err := http.Get(req)
 	if err != nil {

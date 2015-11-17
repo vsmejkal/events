@@ -9,17 +9,19 @@ import (
     "strconv"
     "database/sql"
     _ "github.com/lib/pq"
+
+    "config"
 )
 
 const (
-    DB_NAME = "eventsdb"
+    
 )
 
 // Database handle
 var conn *sql.DB
 
 func Connect() (err error) {
-    dbinfo := fmt.Sprintf("dbname=%s", DB_NAME)
+    dbinfo := fmt.Sprintf("dbname=%s", config.DATABASE_NAME)
 
     conn, err = sql.Open("postgres", dbinfo)
     if err != nil {

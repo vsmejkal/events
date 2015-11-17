@@ -38,7 +38,7 @@ func main() {
                         log.Println(err)
                     }
                 } else {
-                    fmt.Println("INVALID:", event.Name, event.Start)
+                    fmt.Println("OLD:", event.Name, event.Start)
                 }
 
             case err := <-errChan:

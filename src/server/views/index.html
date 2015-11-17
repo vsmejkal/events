@@ -37,7 +37,6 @@
 	<table class="events">
 	{{range .}}
 		<tr>
-			<!-- <td class="date">{{.Start.Format "02/01 15:04"}}</td> -->
 			<td class="date">{{.Start.HumanDate}}</td>
 			<td class="time">{{.Start.Format "15:04"}}</td>
 			<td class="name"><a href="{{.Link}}" target="_blank">{{.Name}}</a></td>

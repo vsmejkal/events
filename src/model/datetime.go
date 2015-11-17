@@ -16,9 +16,9 @@ func (d *Datetime) Decode(data string) error {
     return err
 }
 
-func (d Datetime) IsValid() bool {
-    return d != Datetime{time.Time{}}
-}
+// func (d Datetime) IsValid() bool {
+//     return d != Datetime{time.Time{}}
+// }
 
 func (d Datetime) HumanDate() string {
     today := time.Now()
