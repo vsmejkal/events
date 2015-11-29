@@ -9,8 +9,7 @@ import (
 	"strconv"
 	"database/sql"
 	_ "github.com/lib/pq"
-
-	"config"
+	"github.com/vsmejkal/events/config"
 )
 
 // Database handle

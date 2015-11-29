@@ -1,17 +1,14 @@
 package config
 
 const (
-	// Postgresql database name
+	// PostgreSQL database name
 	DATABASE_NAME = ""
 )
 
 const (
-	// Facebook application token
+	// Facebook access token (app_id|app_secret)
 	FACEBOOK_APP_TOKEN = ""
 
 	// Facebook graph API URL
 	FACEBOOK_GRAPH_API = "https://graph.facebook.com/v2.4/"
-
-	// How many events take to the past
-	FACEBOOK_EVENTS_LIMIT = 20
 )

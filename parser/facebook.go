@@ -3,13 +3,11 @@ package parser
 import (
 	"encoding/json"
 	"fmt"
-	"model"
 	"net/http"
 	"strings"
 	"time"
-	"strconv"
-
-	"config"
+	"github.com/vsmejkal/events/model"
+	"github.com/vsmejkal/events/config"
 )
 
 type fbError struct {
@@ -55,7 +53,7 @@ func ParseEvents(url string, eventChan chan<- model.Event, errChan chan<- error)
 	req := config.FACEBOOK_GRAPH_API + node + "/events" +
 		   "?access_token=" + config.FACEBOOK_APP_TOKEN +
 		   "&fields=id,name,description,start_time,end_time,place" +
-		   "&limit=" + strconv.Itoa(config.FACEBOOK_EVENTS_LIMIT)
+		   "&limit=20"
 
 	resp, err := http.Get(req)
 	if err != nil {

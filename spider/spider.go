@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 	"time"
-	"model"
-	"parser"
+	"github.com/vsmejkal/events/model"
+	"github.com/vsmejkal/events/parser"
 )
 
 func getSources() (sources []string) {

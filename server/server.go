@@ -6,7 +6,7 @@ import (
 	"html/template"
 	"log"
 	"time"
-	"model"
+	"github.com/vsmejkal/events/model"
 )
 
 
