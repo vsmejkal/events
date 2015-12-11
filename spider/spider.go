@@ -50,6 +50,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	count := 0
 	for _, url := range getSources() {
         fmt.Println("\nParsing", url, "...")
 
@@ -67,10 +68,8 @@ func main() {
 				if !ok {
 					break loop
 				}
-
 				if event.IsValid() {
-					fmt.Println("  ", event.Name, event.Start)
-					
+					count += 1
 					if err := event.Store(); err != nil {
 						log.Println(err)
 					}
@@ -82,6 +81,8 @@ func main() {
 		}
 
         // Primitive load balancing
-		time.Sleep(5 * time.Second)
+		time.Sleep(2 * time.Second)
 	}
+
+	fmt.Println("Parsed %d events.")
 }

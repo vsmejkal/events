@@ -1,8 +1,9 @@
 package config
+
 import (
-	"os"
 	"encoding/json"
 	"fmt"
+	"os"
 )
 
 var Database struct {
@@ -31,10 +32,10 @@ func Load(path string) error {
 	}
 	defer file.Close()
 
-	err = json.NewDecoder(file).Decode(&struct{
+	err = json.NewDecoder(file).Decode(&struct {
 		Database interface{}
 		Facebook interface{}
-		Server interface{}
+		Server   interface{}
 	}{
 		&Database,
 		&Facebook,
