@@ -18,11 +18,22 @@ var Facebook struct {
 	GraphURL string
 }
 
-var Server struct {
+var Frontend struct {
 	// Port
 	Port int
 	// Document root
 	DocumentRoot string
+}
+
+var Backend struct {
+	// Port
+	Port int
+	// Document root
+	DocumentRoot string
+	// Admin name
+	User string
+	// Admin password
+	Password string
 }
 
 func Load(path string) error {
@@ -35,11 +46,13 @@ func Load(path string) error {
 	err = json.NewDecoder(file).Decode(&struct {
 		Database interface{}
 		Facebook interface{}
-		Server   interface{}
+		Frontend interface{}
+		Backend  interface{}
 	}{
 		&Database,
 		&Facebook,
-		&Server,
+		&Frontend,
+		&Backend,
 	})
 	if err != nil {
 		return fmt.Errorf("Error parsing '%s': %s", path, err)

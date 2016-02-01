@@ -27,7 +27,7 @@ func getEventsQuery() model.EventQuery {
 }
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {
-	tpl, err := template.ParseFiles(config.Server.DocumentRoot + "views/index.html")
+	tpl, err := template.ParseFiles(config.Frontend.DocumentRoot + "views/index.html")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -66,7 +66,7 @@ func main() {
 
 	http.HandleFunc("/", handleRoot)
 
-	port := config.Server.Port
+	port := config.Frontend.Port
 	fmt.Printf("Listening on port %d...\n", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 
