@@ -20,7 +20,7 @@ func main() {
 		})
 	})
 
-	addr := fmt.Sprintf(":%d", config.Backend.Port)
+	addr := fmt.Sprintf(":%d", config.Admin.Port)
 
 	r.Run(addr)
 }

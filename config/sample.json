@@ -8,14 +8,14 @@
     "GraphURL": "https://graph.facebook.com/v2.4/"
   },
 
-  "Frontend": {
+  "Web": {
     "Port": 8080,
-    "DocumentRoot": "/home/events/frontend/"
+    "DocumentRoot": "/home/events/web/"
   }
 
-  "Backend": {
+  "Admin": {
     "Port": 8081,
-    "DocumentRoot": "/home/events/backend/",
+    "DocumentRoot": "/home/events/admin/",
     "User": "user",
     "Password": ""
   }
