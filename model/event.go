@@ -9,11 +9,11 @@ import (
 type Event struct {
 	Id       int64
 	Name     string
-	Desc     string
 	Link     string
 	Image    string
 	Start    Datetime
 	End      Datetime
+	Desc     string
 	Tags     Tags
 	Place    Place
 }

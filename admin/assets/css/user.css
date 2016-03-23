@@ -1,0 +1,47 @@
+.wrapper {
+  background: rgba(203, 203, 210, 0.15);
+}
+
+/**************************
+ * Login page
+ *************************/
+#login-container {
+	padding-top: calc(5vh);
+}
+#login-form {
+	max-width: 30rem;
+}
+
+/**************************
+ * Search form
+ *************************/
+#search-form .input-group {
+	margin: 15px 0;
+}
+#search-form .input-group,
+#search-form .input-group i {
+	color: #ddd;
+}
+#search-form .input-group-focus,
+#search-form .input-group-focus i {
+	color: #aaa;
+}
+
+/**************************
+ * Table dropdown menu
+ *************************/
+table .btn-group > .btn + .dropdown-toggle {
+	padding-left: 2px;
+	padding-right: 2px;
+}
+table .dropdown-menu.dropdown-xs {
+	min-width: 120px;
+}
+
+
+/**************************
+ * Content card pagination
+ *************************/
+.pagination.pagination-card {
+	margin-top: 0;
+}
