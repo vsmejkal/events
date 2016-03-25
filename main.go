@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"model"
 	"time"
+	"github.com/vsmejkal/events/model"
 )
 
 func main() {

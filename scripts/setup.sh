@@ -4,6 +4,10 @@ apt-get update
 
 # PostgreSQL
 apt-get install postgresql postgresql-contrib
+sudo -u postgres /bin/bash - << EOF
+createuser www
+createdb -O www eventsdb
+EOF
 
 # Automatic security updates
 apt-get install unattended-upgrades
