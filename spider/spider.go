@@ -6,6 +6,9 @@ import (
 	"time"
 	"github.com/vsmejkal/events/model"
 	"github.com/vsmejkal/events/parser"
+	"os"
+	"github.com/vsmejkal/events/config"
+	"path"
 )
 
 func getSources() (sources []string) {
@@ -33,7 +36,21 @@ func getSources() (sources []string) {
     return
 }
 
+func printUsage() {
+	fmt.Printf("Usage: %s config.json\n", path.Base(os.Args[0]))
+}
+
 func main() {
+	if len(os.Args) < 2 || os.Args[1] == "--help" {
+		printUsage()
+		return
+	}
+
+	if err := config.Load(os.Args[1]); err != nil {
+		log.Fatal(err)
+	}
+
+	count := 0
 	for _, url := range getSources() {
         fmt.Println("\nParsing", url, "...")
 
@@ -51,10 +68,8 @@ func main() {
 				if !ok {
 					break loop
 				}
-
 				if event.IsValid() {
-					fmt.Println("  ", event.Name, event.Start)
-					
+					count += 1
 					if err := event.Store(); err != nil {
 						log.Println(err)
 					}
@@ -66,6 +81,8 @@ func main() {
 		}
 
         // Primitive load balancing
-		time.Sleep(5 * time.Second)
+		time.Sleep(2 * time.Second)
 	}
+
+	fmt.Println("Parsed %d events.")
 }

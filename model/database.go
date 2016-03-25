@@ -16,7 +16,7 @@ import (
 var conn *sql.DB
 
 func Connect() (err error) {
-	dbinfo := fmt.Sprintf("dbname=%s", config.DATABASE_NAME)
+	dbinfo := fmt.Sprintf("dbname=%s", config.Database.Name)
 
 	conn, err = sql.Open("postgres", dbinfo)
 	if err != nil {

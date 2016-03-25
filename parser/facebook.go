@@ -50,8 +50,8 @@ func ParseEvents(url string, eventChan chan<- model.Event, errChan chan<- error)
 		return
 	}
 	
-	req := config.FACEBOOK_GRAPH_API + node + "/events" +
-		   "?access_token=" + config.FACEBOOK_APP_TOKEN +
+	req := config.Facebook.GraphURL + node + "/events" +
+		   "?access_token=" + config.Facebook.Token +
 		   "&fields=id,name,description,start_time,end_time,place" +
 		   "&limit=20"
 

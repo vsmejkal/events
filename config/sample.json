@@ -1,0 +1,22 @@
+{
+  "Database": {
+    "Name": "dbname"
+  },
+
+  "Facebook": {
+    "Token": "app_id|app_secret",
+    "GraphURL": "https://graph.facebook.com/v2.4/"
+  },
+
+  "Web": {
+    "Port": 8080,
+    "DocumentRoot": "/home/events/web/"
+  }
+
+  "Admin": {
+    "Port": 8081,
+    "DocumentRoot": "/home/events/admin/",
+    "User": "user",
+    "Password": ""
+  }
+}

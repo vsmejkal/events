@@ -7,6 +7,9 @@ import (
 	"log"
 	"time"
 	"github.com/vsmejkal/events/model"
+	"os"
+	"github.com/vsmejkal/events/config"
+	"path"
 )
 
 
@@ -24,7 +27,7 @@ func getEventsQuery() model.EventQuery {
 }
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {
-	tpl, err := template.ParseFiles("views/index.html")
+	tpl, err := template.ParseFiles(config.Web.DocumentRoot + "views/index.html")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -42,18 +45,29 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func printUsage() {
+	fmt.Printf("Usage: %s config.json\n", path.Base(os.Args[0]))
+}
+
 func main() {
-	err := model.Connect()
-	if err != nil {
+	if len(os.Args) < 2 || os.Args[1] == "--help" {
+		printUsage()
+		return
+	}
+
+	if err := config.Load(os.Args[1]); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := model.Connect(); err != nil {
 		log.Fatal("Cannot establish db connection: %s", err)
 	}
 	defer model.Disconnect()
 
-	fmt.Println("Listening on port 8080...")
-
 	http.HandleFunc("/", handleRoot)
-	err = http.ListenAndServe(":8080", nil)
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
-	}
+
+	port := config.Web.Port
+	fmt.Printf("Listening on port %d...\n", port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
+
 }
