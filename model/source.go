@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"time"
+	"database/sql"
+)
 
 type Source struct {
 	Id int64

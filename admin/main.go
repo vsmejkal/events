@@ -4,14 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/vsmejkal/events/config"
 	"fmt"
-	"net/http"
 	"path"
 	"os"
 	"log"
+	ctl "github.com/vsmejkal/events/admin/controllers"
 )
 
 func printHelp() {
-	fmt.Printf("Usage: %s config.json\n", path.Base(os.Args[0]))
+	fmt.Printf("Usage: %s configFile\n", path.Base(os.Args[0]))
 }
 
 func main() {
@@ -26,14 +26,14 @@ func main() {
 	}
 
 	router := gin.Default()
-	router.LoadHTMLGlob(config.Admin.DocumentRoot + "/templates/*")
+	router.LoadHTMLGlob(config.Admin.DocumentRoot + "/templates/**/*")
 	router.Static("/assets", config.Admin.DocumentRoot + "/assets")
 
-	router.GET("/source/:action/*id", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"title": "Main website",
-		})
-	})
+	router.GET("/sources", ctl.SourceList)
+	router.POST("/sources", ctl.SourceCreate)
+	router.GET("/sources/:id", ctl.SourceRead)
+	router.PUT("/sources/:id", ctl.SourceUpdate)
+	router.DELETE("/sources/:id", ctl.SourceDelete)
 
 	addr := fmt.Sprintf(":%d", config.Admin.Port)
 	router.Run(addr)

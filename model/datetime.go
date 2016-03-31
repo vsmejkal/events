@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"time"
+	"errors"
+)
 
 type Datetime struct {
 	time.Time
@@ -10,9 +13,21 @@ func (d *Datetime) Encode() string {
 	return d.Format(time.RFC3339)
 }
 
-func (d *Datetime) Decode(data string) error {
-	t, err := time.Parse(time.RFC3339, data)
-	*d = Datetime{t}
+// Implements sql.Scanner interface
+func (d *Datetime) Scan(src interface{}) error {
+	var source string
+
+	switch src.(type) {
+	case string:
+		source = []byte(src.(string))
+	case []byte:
+		source = src.([]byte)
+	default:
+		return errors.New("Incompatible type for Datetime")
+	}
+
+	t, err := time.Parse(time.RFC3339, source)
+	*d = Datetime(t)
 	return err
 }
 
