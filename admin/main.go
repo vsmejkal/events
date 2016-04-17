@@ -45,11 +45,11 @@ func main() {
 	router.HTMLRender = createRenders()
 	router.Static("/assets", config.Admin.DocumentRoot + "/assets")
 
-	router.GET("/sources/list", ct.SourceList)
-	router.POST("/sources/create", ct.SourceCreate)
-	router.GET("/sources/read/:id", ct.SourceRead)
-	router.POST("/sources/update/:id", ct.SourceUpdate)
-	router.GET("/sources/delete/:id", ct.SourceDelete)
+	router.GET("/sources", ct.SourceList)
+	router.POST("/sources", ct.SourceCreate)
+	router.GET("/sources/:id", ct.SourceRead)
+	router.POST("/sources/:id", ct.SourceUpdate)
+	router.DELETE("/sources/:id", ct.SourceDelete)
 
 	addr := fmt.Sprintf(":%d", config.Admin.Port)
 	router.Run(addr)
