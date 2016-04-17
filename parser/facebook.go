@@ -81,7 +81,7 @@ func ParseEvents(url string, eventChan chan<- model.Event, errChan chan<- error)
 			End:      parseDate(e.End_time),
 			Place: model.Place {
 				Name:   e.Place.Name,
-				Gps:	model.Gps{e.Place.Location.Latitude, e.Place.Location.Longitude},
+				Gps:	model.GPS{e.Place.Location.Latitude, e.Place.Location.Longitude},
 				Street: e.Place.Location.Street,
 				City:   e.Place.Location.City,
 				Zip:    e.Place.Location.Zip,

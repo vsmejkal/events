@@ -1,11 +1,13 @@
-{{define "sources.index"}}
+{{define "title"}}Seznam zdrojů{{end}}
+
+{{define "content"}}
 <div class="content">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="header">
-                        <h4 class="title">Všechny zdroje <small>(135)</small></h4>
+                        <h4 class="title">Všechny zdroje <small>({{.test}})</small></h4>
                         <!-- <p class="category">Filtr</p> -->
                     </div>
                     <div class="content table-responsive table-full-width">
@@ -54,7 +56,7 @@
                 </div>
 
                 <div class="text-center">
-                    {{template "pagination"}}
+                    {{block "pagination" .}}{{end}}
                 </div>
             </div>
         </div>

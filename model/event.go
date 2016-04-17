@@ -60,8 +60,8 @@ func (e *Event) insert() error {
 				e.Desc,
 				e.Link,
 				e.Image,
-				e.Start.Encode(),
-				e.End.Encode(),
+				e.Start.Value(),
+				e.End.Value(),
 				e.Tags.Encode(),
 				e.Place.Id,
 			).Scan(&e.Id);

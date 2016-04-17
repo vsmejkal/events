@@ -5,21 +5,36 @@ import (
 	"strings"
 	"errors"
 	"strconv"
+	"database/sql/driver"
 )
 
-type Gps struct {
+type GPS struct {
 	Lat  float64
 	Long float64
 }
 
-func (gps *Gps) Encode() string {
-	return fmt.Sprintf("%.8f,%.8f", gps.Lat, gps.Long)
+func (gps GPS) Value() (driver.Value, error) {
+	return []byte(fmt.Sprintf("%.8f,%.8f", gps.Lat, gps.Long)), nil
 }
 
-func (gps *Gps) Decode(data string) error {
+func (gps *GPS) Decode(src interface{}) error {
+	var data string
+
+	if (src == nil) {
+		*gps = GPS{}
+		return nil
+	}
+
+	switch src.(type) {
+	case string, []byte:
+		data = src.(string)
+	default:
+		return errors.New("Incompatible type for GPS")
+	}
+
 	fields := strings.Split(data, ",")
 	if len(fields) != 2 {
-		return errors.New("Gps.Decode error: need 2 items, got " + string(len(fields)))
+		return errors.New("GPS: Decode error (need 2 items, got " + string(len(fields)) + ")")
 	}
 
 	var err error
@@ -33,6 +48,6 @@ func (gps *Gps) Decode(data string) error {
 	return nil
 }
 
-func (gps *Gps) IsValid() bool {
+func (gps GPS) Valid() bool {
 	return gps.Lat != 0 && gps.Long != 0
 }

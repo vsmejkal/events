@@ -6,13 +6,13 @@ import (
 )
 
 type Place struct {
-	Id      int64
-	Name    string
-	Gps     Gps
-	Street  string
-	City    string
-	Zip     string
-	Tags    Tags
+	Id     int64
+	Name   string
+	Gps    GPS
+	Street string
+	City   string
+	Zip    string
+	Tags   Tags
 }
 
 func (p *Place) Store() error {
@@ -39,7 +39,7 @@ func (p Place) Exists() (id int64, err error) {
 }
 
 func (p Place) IsValid() bool {
-	return p.Gps.IsValid()
+	return p.Gps.Valid()
 }
 
 func (p *Place) insert() error {

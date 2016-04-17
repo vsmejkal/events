@@ -75,11 +75,11 @@ func (q *EventQuery) composeSQL() string {
 	}
 
 	if !q.From.IsZero() {
-		sql.WriteString(" AND starttime >= '" + q.From.Encode() + "'")
+		sql.WriteString(" AND starttime >= '" + q.From.Value() + "'")
 	}
 
 	if !q.To.IsZero() {
-		sql.WriteString(" AND starttime <= '" + q.To.Encode() + "'")
+		sql.WriteString(" AND starttime <= '" + q.To.Value() + "'")
 	}
 
 	sql.WriteString(" ORDER BY starttime")

@@ -2,16 +2,32 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/contrib/renders/multitemplate"
 	"github.com/vsmejkal/events/config"
 	"fmt"
 	"path"
 	"os"
 	"log"
-	ctl "github.com/vsmejkal/events/admin/controllers"
+	ct "github.com/vsmejkal/events/admin/controllers"
 )
 
 func printHelp() {
 	fmt.Printf("Usage: %s configFile\n", path.Base(os.Args[0]))
+}
+
+func createRenders() multitemplate.Render {
+	r := multitemplate.New()
+	reg := func(name, layout, content string) {
+		r.AddFromFiles(
+			name,
+			config.Admin.DocumentRoot + "templates/layouts/" + layout + ".tmpl",
+			config.Admin.DocumentRoot + "templates/" + content + ".tmpl",
+		)
+	}
+
+	reg("sources.list", "base", "sources/list")
+
+	return r
 }
 
 func main() {
@@ -26,14 +42,14 @@ func main() {
 	}
 
 	router := gin.Default()
-	router.LoadHTMLGlob(config.Admin.DocumentRoot + "/templates/**/*")
+	router.HTMLRender = createRenders()
 	router.Static("/assets", config.Admin.DocumentRoot + "/assets")
 
-	router.GET("/sources", ctl.SourceList)
-	router.POST("/sources", ctl.SourceCreate)
-	router.GET("/sources/:id", ctl.SourceRead)
-	router.PUT("/sources/:id", ctl.SourceUpdate)
-	router.DELETE("/sources/:id", ctl.SourceDelete)
+	router.GET("/sources/list", ct.SourceList)
+	router.POST("/sources/create", ct.SourceCreate)
+	router.GET("/sources/read/:id", ct.SourceRead)
+	router.POST("/sources/update/:id", ct.SourceUpdate)
+	router.GET("/sources/delete/:id", ct.SourceDelete)
 
 	addr := fmt.Sprintf(":%d", config.Admin.Port)
 	router.Run(addr)
